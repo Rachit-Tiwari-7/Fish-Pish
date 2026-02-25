@@ -1,4 +1,8 @@
-# 🛡️ Fish-Pish: Advanced Phishing Detection & Awareness Ecosystem
+<div align="center">
+  <img src="FP_LOGO.png" alt="Fish-Pish Logo" width="200" />
+</div>
+
+# Fish-Pish: Advanced Phishing Detection & Awareness Ecosystem
 
 **Fish-Pish** is a production-grade cybersecurity platform designed to shield users from phishing attacks through a combination of real-time heuristic analysis and AI-driven forensic evaluation. The ecosystem comprises a **Chromium Extension**, a **Next.js Education Dashboard**, and an **AI-Powered Backend**.
 
