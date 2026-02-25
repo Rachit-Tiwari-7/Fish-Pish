@@ -1,0 +1,19 @@
+{
+  "name": "fish-pish-extension",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.1.4",
+    "lucide-react": "^0.300.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.254",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
+  }
+}

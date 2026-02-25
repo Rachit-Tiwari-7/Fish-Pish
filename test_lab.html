@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fish-Pish Phishing Lab</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .test-case {
+            background: #fff9f9;
+            border: 1px solid #ffebeb;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .test-case h3 {
+            margin-top: 0;
+            color: #e74c3c;
+        }
+
+        .safe-case {
+            background: #f9fff9;
+            border: 1px solid #ebffeb;
+        }
+
+        .safe-case h3 {
+            color: #27ae60;
+        }
+
+        code {
+            background: #eee;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .instructions {
+            background: #eef2f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="container">
+        <h1>🎣 Fish-Pish Phishing Lab</h1>
+        <p class="instructions">
+            <strong>How to test:</strong> Hover your mouse over the links below. Your Fish-Pish extension should trigger
+            and show the analysis popup.
+        </p>
+
+        <div class="test-case safe-case">
+            <h3>✅ Case 1: Legitimate Link</h3>
+            <p>This is a standard link to a trusted site in your golden list.</p>
+            <a href="https://www.google.com">Search on Google</a>
+            <p><small>Expectation: <strong>SAFE</strong> (Score < 10)</small>
+            </p>
+        </div>
+
+        <div class="test-case">
+            <h3>🚨 Case 2: Structural Mismatch (The "Lie")</h3>
+            <p>This link <em>says</em> it goes to PayPal, but it actually points to Wikipedia.</p>
+            <a href="https://en.wikipedia.org/wiki/Phishing">Login to your PayPal Account</a>
+            <p><small>Expectation: <strong>DANGER</strong> (NLP Rules should catch the mismatch)</small></p>
+        </div>
+
+        <div class="test-case">
+            <h3>🚨 Case 3: Subdomain Spoofing</h3>
+            <p>This uses a brand name in the subdomain of an untrusted TLD.</p>
+            <a href="https://microsoft-security-verify.click">microsoft.com/security/verify</a>
+            <p><small>Expectation: <strong>SUSPICIOUS/DANGER</strong> (NLP & TLD Reputation check)</small></p>
+        </div>
+
+        <div class="test-case">
+            <h3>🚨 Case 4: High Urgency/Threat</h3>
+            <p>This uses aggressive social engineering language.</p>
+            <a href="http://unauthorized-access-alert.xyz">URGENT: Your account will be SUSPENDED immediately! Click
+                here to verify.</a>
+            <p><small>Expectation: <strong>VERIFIED_PHISH</strong> (LLM Intent & NLP Urgency)</small></p>
+        </div>
+
+        <div class="test-case">
+            <h3>🚨 Case 5: TLD Reputation</h3>
+            <p>A link using a modern, high-risk TLD often used by scanners.</p>
+            <a href="https://package-tracking.zip">Track your UPS Delivery</a>
+            <p><small>Expectation: <strong>DANGER</strong> (.zip TLD risk)</small></p>
+        </div>
+
+        <div class="test-case safe-case" style="border: 2px dashed #3498db; background: #f0f8ff;">
+            <h3>🛡️ Feature Demo: Safe Sandbox Preview</h3>
+            <p>Test the backend's ability to safely fetch a site without executing its code.</p>
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <input type="text" id="sandbox-url" placeholder="Enter URL (e.g. https://example.com)"
+                    style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <button onclick="testSandbox()"
+                    style="background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">Safe
+                    Preview</button>
+            </div>
+            <div id="sandbox-result"
+                style="margin-top: 10px; border: 1px solid #ddd; padding: 10px; background: white; min-height: 100px; display: none;">
+                <p><strong>Status:</strong> <span id="sb-status"></span></p>
+                <img id="sb-image" src="" style="max-width: 100%; border: 1px solid #ccc; margin-top: 10px;">
+                <pre id="sb-headers" style="background: #eee; padding: 10px; font-size: 0.8em; overflow-x: auto;"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        async function testSandbox() {
+            const url = document.getElementById('sandbox-url').value;
+            const resultDiv = document.getElementById('sandbox-result');
+            const statusSpan = document.getElementById('sb-status');
+            const img = document.getElementById('sb-image');
+            const headersPre = document.getElementById('sb-headers');
+
+            if (!url) { alert("Please enter a URL"); return; }
+
+            resultDiv.style.display = 'block';
+            statusSpan.innerText = "Scanning...";
+            img.style.display = 'none';
+            headersPre.innerText = "";
+
+            try {
+                const response = await fetch('http://localhost:8000/sandbox', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url })
+                });
+                const data = await response.json();
+
+                statusSpan.innerText = data.status === 'success' ? `✅ Safe Preview Generated (HTTP ${data.code})` : `❌ Error: ${data.message}`;
+
+                if (data.status === 'success') {
+                    img.src = data.preview_url;
+                    img.style.display = 'block';
+                    headersPre.innerText = "Headers Captured:\n" + JSON.stringify(data.headers, null, 2);
+                }
+            } catch (e) {
+                statusSpan.innerText = "❌ Connection Error (Is backend running?)";
+                console.error(e);
+            }
+        }
+    </script>
+</body>
+
+</html>

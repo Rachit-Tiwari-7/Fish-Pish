@@ -1,0 +1,19 @@
+2. Phishing Awareness Website (By WiCYS Club)
+Problem Statement
+Many users fall victim to phishing attacks due to lack of awareness. Build a robust
+website that helps users identify phishing messages.
+Objective
+● Spread awareness about phishing attacks
+● Help users identify fake messages or emails
+
+End Product
+● A static or dynamic website
+● Shows examples of real vs fake emails/messages
+● Simple quiz or checklist for identification
+
+Cybersecurity Angle
+● Phishing attacks, social engineering basics
+
+Source
+● Awareness-based problem statements from Cyber Awareness Hackathons
+● Used in NASSCOM student cybersecurity events
