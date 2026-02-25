@@ -4,7 +4,7 @@
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ System Architecture[FISH PISH EXTENSION]
 
 The Fish-Pish ecosystem is built on a modular, high-performance architecture optimized for low-latency analysis and high-accuracy detection.
 
